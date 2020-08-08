@@ -20,6 +20,53 @@ class PostToGSheet(
     private var prependTimestamp: Boolean,
     private var prependList: List<String>?
 ) {
+    @SuppressLint("SimpleDateFormat")
+    fun post(list: List<String>, context: Context) {
+        postIntoTab(list, this.sheetTabname, context)
+    }
+
+    fun post(string: String, context: Context) {
+        postIntoTab(listOf(string), this.sheetTabname, context)
+    }
+
+    fun post(string: String, tabName: String, context: Context) {
+        postIntoTab(listOf(string), tabName, context)
+    }
+
+    fun post(list: List<String>, tabName: String, context: Context) {
+        postIntoTab(list, tabName, context)
+    }
+
+    fun updatePrependList(list: List<String>?) {
+        this.prependList = list
+    }
+
+    private fun postIntoTab(list: List<String>, tabName: String, context: Context) {
+        val constructList: MutableList<String> = mutableListOf()
+        try {
+            val format = "yyyy-MM-dd HH:mm:ss:SSS"
+            val sdf = SimpleDateFormat(format)
+
+            if (this.prependTimestamp) {
+                constructList.add(0, sdf.format(Date()))
+            }
+            if (!this.prependList.isNullOrEmpty()) {
+                constructList.addAll(prependList!!)
+            }
+            constructList.addAll(list)
+            write(
+                context,
+                this.scriptURL,
+                this.sheetURL,
+                tabName,
+                this.templateSheetURL,
+                this.templateSheetTabname,
+                constructList
+            )
+        } catch (e: Exception) {
+        }
+    }
+
     private fun write(
         context: Context,
         scriptID: String,
@@ -55,48 +102,5 @@ class PostToGSheet(
         stringRequest.retryPolicy = retryPolicy
         val queue = Volley.newRequestQueue(context)
         queue.add(stringRequest)
-    }
-
-    @SuppressLint("SimpleDateFormat")
-    fun post(list: List<String>, context: Context) {
-        postIntoTab(list, this.sheetTabname, context)
-    }
-
-    fun post(string: String, context: Context) {
-        postIntoTab(listOf(string), this.sheetTabname, context)
-    }
-
-    fun post(string: String, tabName: String, context: Context) {
-        postIntoTab(listOf(string), tabName, context)
-    }
-
-    fun postIntoTab(list: List<String>, tabName: String, context: Context) {
-        val constructList: MutableList<String> = mutableListOf()
-        try {
-            val format = "yyyy-MM-dd HH:mm:ss:SSS"
-            val sdf = SimpleDateFormat(format)
-
-            if (this.prependTimestamp) {
-                constructList.add(0, sdf.format(Date()))
-            }
-            if (!this.prependList.isNullOrEmpty()) {
-                constructList.addAll(prependList!!)
-            }
-            constructList.addAll(list)
-            write(
-                context,
-                this.scriptURL,
-                this.sheetURL,
-                tabName,
-                this.templateSheetURL,
-                this.templateSheetTabname,
-                constructList
-            )
-        } catch (e: Exception) {
-        }
-    }
-
-    fun updatePrependList(list: List<String>?) {
-        this.prependList = list
     }
 }
