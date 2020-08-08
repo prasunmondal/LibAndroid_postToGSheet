@@ -41,6 +41,10 @@ class PostToGSheet(
         this.prependList = list
     }
 
+    fun updateTabName(tabName: String) {
+        this.sheetTabname = tabName
+    }
+
     private fun postIntoTab(list: List<String>, tabName: String, context: Context) {
         val constructList: MutableList<String> = mutableListOf()
         try {
