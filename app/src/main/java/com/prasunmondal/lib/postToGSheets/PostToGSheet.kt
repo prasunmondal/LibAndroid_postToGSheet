@@ -1,4 +1,4 @@
-package com.prasunmondal.lib.posttogsheets
+package com.prasunmondal.lib.postToGSheets
 
 import android.annotation.SuppressLint
 import android.content.Context
