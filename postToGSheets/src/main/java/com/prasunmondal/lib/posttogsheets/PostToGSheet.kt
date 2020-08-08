@@ -59,6 +59,18 @@ class PostToGSheet(
 
     @SuppressLint("SimpleDateFormat")
     fun post(list: List<String>, context: Context) {
+        postIntoTab(list, this.sheetTabname, context)
+    }
+
+    fun post(string: String, context: Context) {
+        postIntoTab(listOf(string), this.sheetTabname, context)
+    }
+
+    fun post(string: String, tabName: String, context: Context) {
+        postIntoTab(listOf(string), tabName, context)
+    }
+
+    fun postIntoTab(list: List<String>, tabName: String, context: Context) {
         val constructList: MutableList<String> = mutableListOf()
         try {
             val format = "yyyy-MM-dd HH:mm:ss:SSS"
@@ -75,20 +87,13 @@ class PostToGSheet(
                 context,
                 this.scriptURL,
                 this.sheetURL,
-                this.sheetTabname,
+                tabName,
                 this.templateSheetURL,
                 this.templateSheetTabname,
                 constructList
             )
         } catch (e: Exception) {
         }
-    }
-
-    fun postIntoTab(list: List<String>, tabName: String, context: Context) {
-        val temp = this.sheetTabname
-        this.sheetTabname = tabName
-        post(list, context)
-        this.sheetTabname = temp
     }
 
     fun updatePrependList(list: List<String>?) {
