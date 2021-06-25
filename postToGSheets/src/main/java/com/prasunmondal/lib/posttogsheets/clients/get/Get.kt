@@ -124,13 +124,6 @@ class Get() : APICalls, GetFlow, GetFlow.ScriptIdBuilder,
         return GetResponse(response).getObject()
     }
 
-    private fun postExecute(response: String) {
-        if(onCompletion == null)
-            return
-        var responseObj = GetResponse(response)
-        onCompletion!!.accept(responseObj)
-    }
-
     companion object {
         fun builder(): GetFlow.ScriptIdBuilder {
             return Get()

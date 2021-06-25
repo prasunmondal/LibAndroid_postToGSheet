@@ -135,13 +135,6 @@ class Delete private constructor() : APICalls, DeleteFlow, DeleteFlow.ScriptIdBu
         return DeleteResponse(response).getObject()
     }
 
-    private fun postExecute(response: String) {
-        if(onCompletion == null)
-            return
-        var responseObj = DeleteResponse(response)
-        onCompletion!!.accept(responseObj)
-    }
-
     companion object {
         fun builder(): DeleteFlow.ScriptIdBuilder {
             return Delete()
