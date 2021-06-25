@@ -20,10 +20,10 @@ class GetResponse: APIResponse {
         return this
     }
 
-    fun <T> getParsedList(): ArrayList<*> {
-        var jsonString = JSONUtils.jsonStringCleanUp(this.getRawResponse())
-        Log.e("parsing: ", jsonString!!)
-        var arrayLabel = "records"
+    fun <T> getParsedList(): ArrayList<T> {
+        val jsonString = JSONUtils.jsonStringCleanUp(this.getRawResponse())
+        Log.e("parsing: ", jsonString)
+        val arrayLabel = "records"
         val parser = JsonParser()
         val jsonObject = parser.parse(jsonString).asJsonObject
         var jsonarray: JsonArray? = null
@@ -32,7 +32,7 @@ class GetResponse: APIResponse {
         } catch (e: Exception) {
             Log.e("parseJSONObject", "Error while parsing")
         }
-        val result: ArrayList<*> = GsonBuilder().create().fromJson(
+        val result: ArrayList<T> = GsonBuilder().create().fromJson(
             jsonarray.toString(),
             object : TypeToken<ArrayList<T>>() {}.type
         )
