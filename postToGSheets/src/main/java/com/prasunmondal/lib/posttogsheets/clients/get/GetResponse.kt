@@ -8,6 +8,7 @@ import com.google.gson.reflect.TypeToken
 import com.prasunmondal.postjsontosheets.clients.commons.APIResponse
 import com.prasunmondal.postjsontosheets.clients.commons.JSONUtils
 import com.prasunmondal.postjsontosheets.clients.commons.JsonTags
+import java.lang.reflect.Type
 import java.util.ArrayList
 
 class GetResponse: APIResponse {
@@ -20,8 +21,8 @@ class GetResponse: APIResponse {
         return this
     }
 
-    fun <T> getParsedList(): ArrayList<T> {
-        val jsonString = JSONUtils.jsonStringCleanUp(this.getRawResponse())
+    private fun getRecordsArray(str: String): JsonArray? {
+        val jsonString = JSONUtils.jsonStringCleanUp(str)
         Log.e("parsing: ", jsonString)
         val arrayLabel = "records"
         val parser = JsonParser()
@@ -32,9 +33,19 @@ class GetResponse: APIResponse {
         } catch (e: Exception) {
             Log.e("parseJSONObject", "Error while parsing")
         }
+        return jsonarray
+    }
+
+    /**
+     * Sample use:
+     * val type = object : TypeToken<List<Person>>() {}.type
+     * val object: Person = getParsedList<Person>(response.getRawResponse(), type)[0]
+     */
+    fun <T> getParsedList(typeToken: Type): ArrayList<T> {
+        var jsonarray = getRecordsArray(this.getRawResponse())
         val result: ArrayList<T> = GsonBuilder().create().fromJson(
             jsonarray.toString(),
-            object : TypeToken<ArrayList<T>>() {}.type
+            typeToken
         )
         return result
     }
